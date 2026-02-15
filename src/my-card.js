@@ -16,6 +16,15 @@ export class MyCard extends LitElement {
     super();
     this.title = "My card";
     this.imgsrc = "https://www.scottsmorraphotography.com/images/640/Lanikai-Beach-Sunrise-Palm-Trees-Oahu-Hawaii.jpg";
+    this.fancy = false;
+  }
+
+   static get properties() {
+    return {
+      fancy: {type: Boolean, reflect: true},
+      title: { type: String },
+      imgsrc: { type: String},
+    };
   }
 
   static get styles() {
@@ -26,12 +35,16 @@ export class MyCard extends LitElement {
 }
 
 .btn-wrapper {
-  background-color: #ff00a3;
+  background-color: var(--my-card-fancy-bg, #ff00a3);
   padding: 10px 10px;
   margin: 10px 30px;
   width: 295px;
-  height: 370px;
+  height: 395px;
   position: relative;
+}
+
+:host([fancy]){
+  color: white;
 }
 
 .btn{
@@ -57,9 +70,7 @@ h1{
 img{
   height: 140px;
   width: 250px;
-  position: absolute;
-  margin: 100;
-  left: 32px;
+  margin: 2px 23px;
  
 }
 
@@ -91,14 +102,17 @@ h3{
   color: white;
   width: 250px;
   margin-left: 20px;
-  margin-top: -5px;
+  margin-top: 15px;
   background-color: #80aaff;
   border: black;
   
 }
 
 .btn-wrapper.fancy{
-  background-color: #f55beb;
+  color: white;
+  margin-top: 170px;
+  width: 250px;
+  margin-left: 20px; 
 }
 
 .duplicate{
@@ -152,10 +166,17 @@ h3{
 }
 
 .pagetitle{
-  color: blue;
+  color: #8BE8FC;
   margin: 10px 40px;
-  position: absolute;
 }
+
+summary{
+  color: white;
+  margin-top: 5px;
+  width: 100px;
+  margin-left: 21px;
+}
+
       :host {
         display: block;
       }
@@ -163,6 +184,16 @@ h3{
     
 
   }
+
+  openChanged(e) {
+  console.log(e);
+  if (e.target.getAttribute('open') !== null) {
+    this.fancy = true;
+  }
+  else {
+    this.fancy = false;
+  }
+}
 
   render() {
     return html`
@@ -172,8 +203,13 @@ h3{
     <h2></h2> 
     
     <img src="${this.imgsrc}" alt="">
-    
-    <p> Travel to the most amazing place on earth. It has everything from beautiful beaches to volcanos. Book your vacation today! </p>
+
+    <details ?open="${this.fancy}" @toggle="${this.openChanged}">
+    <summary>Description</summary>
+    <div>
+      <slot>Travel to the most amazing place on earth. It has everything from beautiful beaches to volcanos. Book your vacation today!</slot>
+    </div>
+  </details>
   
     <h3>Click for more details:</h3>
     
@@ -189,12 +225,6 @@ h3{
     `;
   }
 
-  static get properties() {
-    return {
-      title: { type: String },
-      imgsrc: { type: String},
-    };
-  }
 }
 
 globalThis.customElements.define(MyCard.tag, MyCard);
